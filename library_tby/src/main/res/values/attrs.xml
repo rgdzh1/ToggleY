@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="ToggleColorY">
+        <!--        开关为开的背景-->
+        <attr name="tby_open_bg" format="reference" />
+        <!--        开关为关的背景-->
+        <attr name="tby_close_bg" format="reference" />
+        <!--        滑动按钮的背景-->
+        <attr name="tby_touch" format="reference" />
+        <!--        默认开关状态-->
+        <attr name="tby_state" format="boolean" />
+    </declare-styleable>
+
+
+</resources>

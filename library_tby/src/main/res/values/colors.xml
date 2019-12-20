@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="tby_read">@android:color/holo_red_light</color>
+    <color name="tby_gray">@android:color/darker_gray</color>
+    <color name="tby_orange">@android:color/holo_orange_light</color>
+</resources>
