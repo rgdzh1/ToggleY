@@ -50,6 +50,7 @@ public class ToggleColorY extends View {
         initPaint();
     }
 
+
     @SuppressLint("ResourceAsColor")
     private void initParame(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.ToggleColorY, defStyleAttr, 0);
