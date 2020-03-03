@@ -17,7 +17,6 @@ import androidx.annotation.Nullable;
 
 public class ToggleColorY extends View {
     private static final String TAG = ToggleColorY.class.getName();
-
     private float mSlidingDistance;
     private float mStartX;//开始X值
     private float mLastX;//开始X值
@@ -124,51 +123,59 @@ public class ToggleColorY extends View {
         }
     }
 
-
-    public void clickToggle() {
-        if (mIsEnableClick) {
-            mIsOpen = !mIsOpen;
-            drawToggle();
-        }
-    }
-
-
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
+                //mLastX 是记录手指按下的点X坐标值
+                //mStartX 表示的是当前滑动的起始点X坐标值
                 mLastX = mStartX = event.getX();
-                //手指刚按下,按钮是可以点击
+                //2种情况
+                //1, Down->Up,若是这个顺序,手指抬起时候,按照点击逻辑切换开关
+                //2, Down->Move->Up,若是这个顺序, 手指抬起时候, 就按照滑动逻辑切换开关
                 mIsEnableClick = true;
                 break;
             case MotionEvent.ACTION_MOVE:
                 float mEndX = event.getX();
+                //滑动起始坐标与滑动后坐标值相减,得到手指移动距离
                 float distanceX = mEndX - mStartX;
+                //对手指移动距离进行累加,这个距离是圆心X轴坐标
                 mSlidingDistance += distanceX;
+                //判断左右两个临界值,不能超出左右侧边值
                 if (mSlidingDistance < mHeight / 2) {
                     mSlidingDistance = mHeight / 2;
                 }
                 if (mSlidingDistance >= mWidth - mHeight / 2) {
                     mSlidingDistance = mWidth - mHeight / 2;
                 }
+                //重绘,到这一步,圆就随手指开始移动了
                 invalidate();
-                mStartX = event.getX();
-                float mMinDistanceX = Math.abs(mStartX - mLastX);
-                //当手指滑动距离大于5的时候, 表示用户现在处于滑动按钮的状态
+                //手指按下坐标与滑动最后坐标差值
+                float mMinDistanceX = Math.abs(mEndX - mLastX);
+                //判断差值
+                //1,如果差值大于8, 则认为是滑动, 如果用户松开按钮则按照滑动条件判断
+                //1,如果差值小于8, 则认为是点击, 如果用户此时松开按钮则按照点击条件判断
                 if (mMinDistanceX > 8) {
                     mIsEnableClick = false;
+                } else {
+                    mIsEnableClick = true;
                 }
+                //更新滑动X轴起始坐标,为下一次Move事件滑动做准备
+                mStartX = event.getX();
                 break;
             case MotionEvent.ACTION_UP:
                 if (!mIsEnableClick) {
+                    //当判定为滑动时, 首先判断这次滑动累加的距离, 如果大于一半则开关取反
                     if (mSlidingDistance >= mWidth / 2) {
                         mIsOpen = true;
                     } else {
                         mIsOpen = false;
                     }
+                    //设置好开关Flag,执行替换背景
                     drawToggle();
                 } else {
-                    clickToggle();
+                    mIsOpen = !mIsOpen;
+                    drawToggle();
                 }
                 break;
         }
@@ -177,7 +184,7 @@ public class ToggleColorY extends View {
 
     /**
      * 绘制touche
-     * 为开还是关
+     * 替换开关逻辑
      */
     public void drawToggle() {
         if (mIsOpen) {
@@ -201,7 +208,6 @@ public class ToggleColorY extends View {
     public void setOnClick(OnClick onClick) {
         this.onClick = onClick;
     }
-
 
     //屏幕旋转时候保存必要的数据
     @Nullable
