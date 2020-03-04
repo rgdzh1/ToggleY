@@ -14,10 +14,12 @@
         }
     }    
     ```
+    
 - 配置依赖, 在所在Module的build.gradle文件下
   ```groovy
    implementation 'com.yey.ty:library_tby:0.0.3'
   ```
+  
 - 属性释意
     ```xml
       当使用ToggleColorY,这些值对应为颜色id
@@ -27,6 +29,7 @@
       tby_touch:开关滑动按钮背景
       tby_state:开关目前状态为开或者关,对应值为ture或者false
     ```
+    
 - 使用颜色作为开关背景
     ```xml
      <com.yey.library_tby.ToggleColorY
@@ -38,6 +41,7 @@
          app:tby_state="true"
          app:tby_touch="@color/yellow" />   
     ```
+    
 - 使用图片作为开关背景
     ```xml
      <com.yey.library_tby.ToggleImageY
@@ -49,6 +53,7 @@
          app:tby_touch="@mipmap/touche"
          app:tby_state="true" />   
     ```
+    
 - 代码
     ```java
     ((ToggleColorY) findViewById(R.id.ytb_color)).setOnClick(new OnClick() {
@@ -64,5 +69,7 @@
         }
     });
     ```
-- 查看
+    
+- 效果
+
 ![效果](20200304_140609.gif)
