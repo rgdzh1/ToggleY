@@ -103,15 +103,19 @@ public class ToggleColorY extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
+        //开关初始状态
         if (mIsOpen) {
             canvas.drawRoundRect(mRectFOpen, mHeight / 2, mHeight / 2, mOpenBGPaint);//开
         } else {
             canvas.drawRoundRect(mRectFClose, mHeight / 2, mHeight / 2, mCloseBGPaint);//关
         }
         firstDraw();
+        //绘制滑动按钮
         canvas.drawCircle(mSlidingDistance, mHeight / 2, mHeight / 2, mTouchPaint);
     }
-
+    /**
+     * 根据开关初始状态设置滑动按钮位置
+     */
     private void firstDraw() {
         if (!mIsFirst) {
             if (mIsOpen) {
