@@ -108,9 +108,11 @@ public class ToggleImageY extends View {
     @Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         super.onLayout(changed, left, top, right, bottom);
-        mTouch = BitmapUtils.scaleBitmap(mTouch, getHeight(), getHeight());
-        mCloseBG = BitmapUtils.scaleBitmap(mCloseBG, getWidth(), getHeight());
-        mOpenBG = BitmapUtils.scaleBitmap(mOpenBG, getWidth(), getHeight());
+        mWidth = getWidth();
+        mHeight = getHeight();
+        mTouch = BitmapUtils.scaleBitmap(mTouch, mHeight, mHeight);
+        mCloseBG = BitmapUtils.scaleBitmap(mCloseBG, mWidth, mHeight);
+        mOpenBG = BitmapUtils.scaleBitmap(mOpenBG, mWidth, mHeight);
     }
 
     @Override
@@ -128,7 +130,7 @@ public class ToggleImageY extends View {
     private void firstDraw() {
         if (!mIsFirst) {
             if (mIsOpen) {
-                mSlidingDistance = mOpenBG.getWidth() - mOpenBG.getHeight();
+                mSlidingDistance = mWidth - mHeight;
             } else {
                 mSlidingDistance = 0;
             }
@@ -150,8 +152,8 @@ public class ToggleImageY extends View {
                 if (mSlidingDistance < 0) {
                     mSlidingDistance = 0;
                 }
-                if (mSlidingDistance >= mOpenBG.getWidth() - mOpenBG.getHeight()) {
-                    mSlidingDistance = mOpenBG.getWidth() - mOpenBG.getHeight();
+                if (mSlidingDistance >= mWidth - mHeight) {
+                    mSlidingDistance = mWidth - mHeight;
                 }
                 invalidate();
                 float mMinDistanceX = Math.abs(mEndX - mLastX);
@@ -164,7 +166,7 @@ public class ToggleImageY extends View {
                 break;
             case MotionEvent.ACTION_UP:
                 if (!mIsEnableClick) {
-                    if (mSlidingDistance >= mOpenBG.getWidth() / 2) {
+                    if (mSlidingDistance >= (mWidth-mHeight) / 2) {
                         mIsOpen = true;
                     } else {
                         mIsOpen = false;
@@ -185,7 +187,7 @@ public class ToggleImageY extends View {
      */
     public void drawToggle() {
         if (mIsOpen) {
-            mSlidingDistance = mOpenBG.getWidth() - mOpenBG.getHeight();
+            mSlidingDistance = mWidth - mHeight;
         } else {
             mSlidingDistance = 0;
         }
