@@ -23,13 +23,14 @@
 
     <com.yey.library_tby.ToggleImageY
         android:id="@+id/ytb_image"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="100dp"
+        android:layout_height="40dp"
         android:layout_marginTop="32dp"
         app:layout_constraintEnd_toEndOf="@+id/ytb_color"
         app:layout_constraintStart_toStartOf="@+id/ytb_color"
         app:layout_constraintTop_toBottomOf="@+id/ytb_color"
+        app:tby_close_bg="@mipmap/close"
+        app:tby_open_bg="@mipmap/open"
+        app:tby_touch="@mipmap/touche"
         app:tby_state="true" />
-
-
 </androidx.constraintlayout.widget.ConstraintLayout>

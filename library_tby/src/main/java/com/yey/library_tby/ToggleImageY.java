@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.RectF;
 import android.graphics.drawable.BitmapDrawable;
@@ -20,7 +21,6 @@ import androidx.annotation.Nullable;
 
 public class ToggleImageY extends View {
     private static final String TAG = ToggleImageY.class.getName();
-
     private float mSlidingDistance;
     private float mStartX;//开始X值
     private float mLastX;//开始X值
@@ -36,6 +36,8 @@ public class ToggleImageY extends View {
     private Bitmap mOpenBG;
     private Bitmap mCloseBG;
     private Bitmap mTouch;
+    private int mWidth;
+    private int mHeight;
 
     //屏幕旋转时候保存必要的数据
     @Nullable
@@ -85,9 +87,9 @@ public class ToggleImageY extends View {
     @SuppressLint("ResourceAsColor")
     private void initParame(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.ToggleColorY, defStyleAttr, 0);
-        mOpenBGId = typedArray.getInteger(R.styleable.ToggleColorY_tby_open_bg, R.drawable.tiy_open);
-        mCloseBGId = typedArray.getInteger(R.styleable.ToggleColorY_tby_close_bg, R.drawable.tiy_close);
-        mTouchId = typedArray.getInteger(R.styleable.ToggleColorY_tby_touch, R.drawable.tiy_touch);
+        mOpenBGId = typedArray.getResourceId(R.styleable.ToggleColorY_tby_open_bg, R.drawable.tiy_open);
+        mCloseBGId = typedArray.getResourceId(R.styleable.ToggleColorY_tby_close_bg, R.drawable.tiy_close);
+        mTouchId = typedArray.getResourceId(R.styleable.ToggleColorY_tby_touch, R.drawable.tiy_touch);
         mIsOpen = typedArray.getBoolean(R.styleable.ToggleColorY_tby_state, false);
         typedArray.recycle();
     }
@@ -98,11 +100,18 @@ public class ToggleImageY extends View {
     }
 
     private void initBitmap() {
-        mTouch = drawableToBitmap(mTouchId, getContext());
-        mCloseBG = drawableToBitmap(mCloseBGId, getContext());
-        mOpenBG = drawableToBitmap(mOpenBGId, getContext());
+        mTouch = BitmapUtils.resourceIDToBitmap(mTouchId, getContext());
+        mCloseBG = BitmapUtils.resourceIDToBitmap(mCloseBGId, getContext());
+        mOpenBG = BitmapUtils.resourceIDToBitmap(mOpenBGId, getContext());
     }
 
+    @Override
+    protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
+        super.onLayout(changed, left, top, right, bottom);
+        mTouch = BitmapUtils.scaleBitmap(mTouch, getHeight(), getHeight());
+        mCloseBG = BitmapUtils.scaleBitmap(mCloseBG, getWidth(), getHeight());
+        mOpenBG = BitmapUtils.scaleBitmap(mOpenBG, getWidth(), getHeight());
+    }
 
     @Override
     protected void onDraw(Canvas canvas) {
@@ -127,26 +136,11 @@ public class ToggleImageY extends View {
         }
     }
 
-
-    public void clickToggle() {
-        if (mIsEnableClick) {
-            mIsOpen = !mIsOpen;
-            drawToggle();
-        }
-    }
-
-    @Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-//        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-        setMeasuredDimension(mCloseBG.getWidth(), mCloseBG.getHeight());
-    }
-
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 mLastX = mStartX = event.getX();
-                //手指刚按下,按钮是可以点击
                 mIsEnableClick = true;
                 break;
             case MotionEvent.ACTION_MOVE:
@@ -160,12 +154,13 @@ public class ToggleImageY extends View {
                     mSlidingDistance = mOpenBG.getWidth() - mOpenBG.getHeight();
                 }
                 invalidate();
-                mStartX = event.getX();
-                float mMinDistanceX = Math.abs(mStartX - mLastX);
-                //当手指滑动距离大于5的时候, 表示用户现在处于滑动按钮的状态
+                float mMinDistanceX = Math.abs(mEndX - mLastX);
                 if (mMinDistanceX > 8) {
                     mIsEnableClick = false;
+                } else {
+                    mIsEnableClick = true;
                 }
+                mStartX = event.getX();
                 break;
             case MotionEvent.ACTION_UP:
                 if (!mIsEnableClick) {
@@ -176,7 +171,8 @@ public class ToggleImageY extends View {
                     }
                     drawToggle();
                 } else {
-                    clickToggle();
+                    mIsOpen = !mIsOpen;
+                    drawToggle();
                 }
                 break;
         }
@@ -185,14 +181,12 @@ public class ToggleImageY extends View {
 
     /**
      * 绘制touche
-     * 为开还是关
+     * 并回调click
      */
     public void drawToggle() {
         if (mIsOpen) {
-            //开
             mSlidingDistance = mOpenBG.getWidth() - mOpenBG.getHeight();
         } else {
-            //关
             mSlidingDistance = 0;
         }
         if (onClick != null) {
@@ -209,27 +203,5 @@ public class ToggleImageY extends View {
     public void setOnClick(OnClick onClick) {
         this.onClick = onClick;
     }
-
-
-    /**
-     * drawable转bitmap
-     *
-     * @param resourceID
-     * @param context
-     * @return
-     */
-    public static Bitmap drawableToBitmap(int resourceID, Context context) {
-        Drawable drawable = context.getResources().getDrawable(resourceID);
-        if (drawable instanceof BitmapDrawable) {
-            return ((BitmapDrawable) drawable).getBitmap();
-        }
-        Bitmap bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
-        Canvas canvas = new Canvas(bitmap);
-        drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
-        drawable.draw(canvas);
-        return bitmap;
-    }
-
-
 }
 

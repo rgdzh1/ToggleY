@@ -41,7 +41,7 @@ group = "com.yey.ty"
 //libName(库的名字)
 def libName = "ToggleY"
 //version(版本号)
-version = "0.0.2"
+version = "0.0.3"
 //生成源文件
 task sourcesJar(type: Jar) {
     from android.sourceSets.main.java.srcDirs
