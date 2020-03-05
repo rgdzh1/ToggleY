@@ -1,5 +1,6 @@
 ## ToggleY
 > 开关按钮, 开与关的背景可以用颜色或图片.
+> 如果对实现源码感兴趣可以参考我写的[博客](https://blog.csdn.net/MoLiao2046/article/details/104688165)
 ### 使用
 - 在项目根目录build.gradle中配置repositories
     ```groovy
