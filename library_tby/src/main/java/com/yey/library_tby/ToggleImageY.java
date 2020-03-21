@@ -40,7 +40,6 @@ public class ToggleImageY extends View {
     private int mHeight;
 
     //屏幕旋转时候保存必要的数据
-    @Nullable
     @Override
     protected Parcelable onSaveInstanceState() {
         Log.e(TAG, "onSaveInstanceState");
@@ -73,11 +72,11 @@ public class ToggleImageY extends View {
         this(context, null);
     }
 
-    public ToggleImageY(Context context, @Nullable AttributeSet attrs) {
+    public ToggleImageY(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public ToggleImageY(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public ToggleImageY(Context context,  AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         initParame(context, attrs, defStyleAttr);
         initPaint();
@@ -198,9 +197,7 @@ public class ToggleImageY extends View {
     }
 
     /**
-     * 设置点击事件回调
-     *
-     * @return
+     * @return 设置点击事件回调
      */
     public void setOnClick(OnClick onClick) {
         this.onClick = onClick;
